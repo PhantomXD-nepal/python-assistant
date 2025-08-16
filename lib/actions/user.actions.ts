@@ -1,9 +1,10 @@
 'use server';
 
 import { auth } from "@clerk/nextjs/server";
-import { supabase } from "../supabase";
+import { createSupabaseClient } from "../supabase";
 
 export const getRemainingInstances = async (): Promise<number> => {
+    const supabase = createSupabaseClient();
     const { userId } = await auth();
     if (!userId) return 0;
 

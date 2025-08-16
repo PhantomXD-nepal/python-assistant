@@ -140,7 +140,8 @@ const CompanionComponent = ({
             >
               <Lottie
                   lottieRef={lottieRef}
-                  path="/soundwaves.json"
+                  animationData={require("@/public/soundwaves.json")}
+                  loop={true}
                   autoplay={false}
                   className="companion-lottie"
                 />
