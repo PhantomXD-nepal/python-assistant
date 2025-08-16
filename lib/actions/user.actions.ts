@@ -3,29 +3,42 @@
 import { auth } from "@clerk/nextjs/server";
 import { createSupabaseClient } from "../supabase";
 
-export const getRemainingInstances = async (): Promise<number> => {
+export const getUser = async () => {
     const supabase = createSupabaseClient();
     const { userId } = await auth();
-    if (!userId) return 0;
+    if (!userId) return null;
 
-    
     const { data: userData, error } = await supabase
         .from('users')
-        .select('remaining_instances')
+        .select('*')
         .eq('id', userId)
         .single();
 
-    if (error && error.code !== 'PGRST116') {
-        console.error("Error fetching remaining instances:", error);
-        return 0; // Return 0 on error
+    if (error) {
+        console.error("Error fetching user:", error);
+        return null;
     }
 
-    if (!userData) {
-        // If user is not in our DB, they are a new user.
-        // The `CreateTeacher` action gives 10 free instances.
-        // So we can assume they have more than 0.
-        return 10;
+    return userData;
+}
+
+
+export const updateUserDuration = async (duration: number) => {
+    const supabase = createSupabaseClient();
+    const { userId } = await auth();
+    if (!userId) return null;
+
+    const { data: userData, error } = await supabase
+        .from('users')
+        .update({ duration })
+        .eq('id', userId)
+        .select()
+        .single();
+
+    if (error) {
+        console.error("Error updating user duration:", error);
+        return null;
     }
 
-    return userData.remaining_instances;
+    return userData;
 }

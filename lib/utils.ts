@@ -22,7 +22,7 @@ export const configureAssistant = (voice: string, style: string) => {
         "Hello, let's start the session. Today we'll be talking about {{topic}}.",
     transcriber: {
       provider: "google",
-      model: "gemini-2.5-pro",
+      model: "gemini-2.0-flash",
       language: "Multilingual",
     },
     voice: {
@@ -30,7 +30,7 @@ export const configureAssistant = (voice: string, style: string) => {
       voiceId: voiceId,
       stability: 0.4,
       similarityBoost: 0.8,
-      speed: 0.9,
+      speed: 1,
       style: 0.5,
       useSpeakerBoost: true,
       model: "eleven_multilingual_v2",
@@ -52,6 +52,7 @@ export const configureAssistant = (voice: string, style: string) => {
                     Keep your responses short, like in a real voice conversation.
                     Do not include any special characters in your responses - this is a voice conversation.
                     Also answer in context of nepal
+                    If the user talks in nepali you must answer in english unless mentioned otherwise.
               `,
         },
       ],

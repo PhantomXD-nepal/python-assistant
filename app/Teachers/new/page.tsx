@@ -1,11 +1,11 @@
 import CompanionForm from "@/components/CompanionForm";
-import { getRemainingInstances } from "@/lib/actions/user.actions";
+import { getUser } from "@/lib/actions/user.actions";
 import Image from "next/image";
 import Link from "next/link";
 
 const NewCompanion = async () => {
-  const remainingInstances = await getRemainingInstances();
-  const canCreateCompanion = remainingInstances > 0;
+  const user = await getUser();
+  const canCreateCompanion = user && user.remaining_instances > 0;
 
   return (
     <main className="min-lg:w-1/3 min-md:w-2/3 items-center justify-center">

@@ -91,6 +91,9 @@ export const getTeacher = async(id:string) => {
     const supabase = createSupabaseClient()
 
     const {data,error} = await supabase.from('teachers').select().eq('id',id)
+    if (!data || data.length === 0) {
+        return null;
+    }
     return data[0]
     
 }

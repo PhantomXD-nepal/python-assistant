@@ -12,6 +12,8 @@ const CompanionsLibrary = async ({ searchParams }: SearchParams) => {
 
   const teachers = await getAllTeacher({ subject, topic });
 
+  const uniqueTeachers = teachers ? Array.from(new Map(teachers.map(teacher => [teacher.id, teacher])).values()) : [];
+
   return (
     <main>
       <section className="flex justify-between gap-4 max-sm:flex-col">
@@ -22,7 +24,7 @@ const CompanionsLibrary = async ({ searchParams }: SearchParams) => {
         </div>
       </section>
       <section className="companions-grid">
-        {teachers.map((teacher: any) => (
+        {uniqueTeachers.map((teacher: any) => (
           <CompanionCard
             key={teacher.id}
             {...teacher}

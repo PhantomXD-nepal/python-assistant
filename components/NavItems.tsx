@@ -9,7 +9,7 @@ const navItems = [
   { label: "Home", href: "/" },
   { label: "Teachers", href: "/Teachers" },
   { label: "Plans", href: "/plans" },
-  { label: "My Progress", href: "my-journey" },
+  { label: "My Journey", href: "/my-journey" },
 ];
 
 const NavItems = () => {

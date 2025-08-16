@@ -7,6 +7,8 @@ import Image from "next/image";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { CompanionComponentProps, SavedMessage } from "@/types";
 import { createTeacherSession } from "@/lib/actions/teacher.actions";
+import { getUser, updateUserDuration } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -29,9 +31,22 @@ const CompanionComponent = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
+  const [user, setUser] = useState({ duration: 0 });
+  const [callDuration, setCallDuration] = useState(0);
 
   const lottieRef = useRef<LottieRefCurrentProps>(null);
-  console.log(userImage);
+  const callStartTime = useRef<number | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await getUser();
+      if (userData) {
+        setUser(userData);
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     if (lottieRef) {
@@ -44,11 +59,29 @@ const CompanionComponent = ({
   }, [isSpeaking, lottieRef]);
 
   useEffect(() => {
-    const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
+    let timer: NodeJS.Timeout;
+    if (callStatus === CallStatus.ACTIVE) {
+      timer = setInterval(() => {
+        setCallDuration((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [callStatus]);
+
+  useEffect(() => {
+    const onCallStart = () => {
+      setCallStatus(CallStatus.ACTIVE);
+      callStartTime.current = Date.now();
+    };
 
     const onCallEnd = () => {
       createTeacherSession({ teacherId: companionId });
       setCallStatus(CallStatus.FINISHED);
+      if (callStartTime.current) {
+        const duration = (Date.now() - callStartTime.current) / 1000;
+        const newDuration = user.duration - duration;
+        updateUserDuration(newDuration);
+      }
     };
 
     const onMessage = (message: Message) => {
@@ -78,7 +111,7 @@ const CompanionComponent = ({
       vapi.off("speech-start", onSpeechStart);
       vapi.off("speech-end", onSpeechEnd);
     };
-  }, [messages]);
+  }, [messages, user.duration]);
 
   const toggleMicrophone = () => {
     const isMuted = vapi.isMuted();
@@ -87,6 +120,11 @@ const CompanionComponent = ({
   };
 
   const handleCall = async () => {
+    if (user.duration <= 0) {
+      router.push("/plans");
+      return;
+    }
+
     setCallStatus(CallStatus.CONNECTING);
 
     const assistantOverrides = {
@@ -95,13 +133,21 @@ const CompanionComponent = ({
       serverMessages: [],
     };
 
-    // @ts-expect-error
+
+    console.log('Starting call with voice:', voice, 'and style:', style);
+        // @ts-expect-error
     vapi.start(configureAssistant(voice, style), assistantOverrides);
   };
 
   const handleDisconnect = () => {
     setCallStatus(CallStatus.FINISHED);
     vapi.stop();
+  };
+
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -160,6 +206,9 @@ const CompanionComponent = ({
               className="rounded-lg"
             />
             <p className="font-bold text-2xl">{userName}</p>
+          </div>
+          <div className="text-center">
+            <p>Time Remaining: {formatDuration(user.duration - callDuration)}</p>
           </div>
           <button
             className="btn-mic"
