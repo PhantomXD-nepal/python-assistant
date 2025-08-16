@@ -63,3 +63,18 @@ export const getUserSessions = async (userId: string, limit = 10) => {
 
     return data.map(({ teachers }) => teachers);
 }
+
+export const getSessionById = async (id: string) => {
+    const { data, error } = await supabase
+        .from('session_history')
+        .select('*, teacher:teacher_id(*)')
+        .eq('id', id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        return null;
+    }
+
+    return data;
+}

@@ -74,14 +74,16 @@ const CompanionComponent = ({
       callStartTime.current = Date.now();
     };
 
-    const onCallEnd = () => {
-      createTeacherSession({ teacherId: companionId });
+    const onCallEnd = async () => {
+            const transcript = messages.map(m => `${m.role}: ${m.content}`).join('\n');
+      const { sessionId } = await createTeacherSession({ teacherId: companionId, transcript });
       setCallStatus(CallStatus.FINISHED);
       if (callStartTime.current) {
         const duration = (Date.now() - callStartTime.current) / 1000;
         const newDuration = user.duration - duration;
         updateUserDuration(newDuration);
       }
+      router.push(`/session-summary/${sessionId}`);
     };
 
     const onMessage = (message: Message) => {
@@ -145,8 +147,9 @@ const CompanionComponent = ({
   };
 
   const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
+    
+    const minutes = Math.floor(Math.floor(seconds) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
@@ -194,6 +197,17 @@ const CompanionComponent = ({
             </div>
           </div>
           <p className="font-bold text-2xl">{name}</p>
+          <div className="text-center p-4 bg-gray-100 rounded-lg">
+            <p className="text-lg">
+              {callStatus === CallStatus.INACTIVE
+                ? "Ready to start a session."
+                : callStatus === CallStatus.CONNECTING
+                ? "Connecting to your companion..."
+                : callStatus === CallStatus.ACTIVE
+                ? "Session in progress."
+                : "Session finished."}
+            </p>
+          </div>
         </div>
 
         <div className="user-section">
@@ -244,28 +258,7 @@ const CompanionComponent = ({
         </div>
       </section>
 
-      <section className="transcript">
-        <div className="transcript-message no-scrollbar">
-          {messages.map((message, index) => {
-            if (message.role === "assistant") {
-              return (
-                <p key={index} className="max-sm:text-sm">
-                  {name.split(" ")[0].replace("/[.,]/g, ", "")}:{" "}
-                  {message.content}
-                </p>
-              );
-            } else {
-              return (
-                <p key={index} className="text-primary max-sm:text-sm">
-                  {userName}: {message.content}
-                </p>
-              );
-            }
-          })}
-        </div>
-
-        <div className="transcript-fade" />
-      </section>
+      
     </section>
   );
 };
