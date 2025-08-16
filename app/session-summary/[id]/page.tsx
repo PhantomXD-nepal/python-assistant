@@ -2,6 +2,8 @@ import { getSessionById } from "@/lib/actions/session.actions";
 import { getSubjectColor } from "@/lib/utils";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import ReactMarkdown from "react-markdown";
 
 interface SessionSummaryPageProps {
   params: {
@@ -19,7 +21,7 @@ const SessionSummaryPage = async ({ params }: SessionSummaryPageProps) => {
   const { teacher, summary } = session;
 
   return (
-    <main className="p-8">
+    <main className="p-4">
       <h1 className="text-3xl font-bold mb-8">Session Summary</h1>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="flex items-center mb-4">
@@ -39,10 +41,12 @@ const SessionSummaryPage = async ({ params }: SessionSummaryPageProps) => {
             <p className="text-lg text-gray-600">{teacher.subject}</p>
           </div>
         </div>
-        <div>
+        <Card className="p-4 mt-2">
           <h3 className="text-xl font-bold mb-2">Summary</h3>
-          <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
-        </div>
+          <ReactMarkdown >
+            {summary}
+          </ReactMarkdown>
+        </Card>
       </div>
     </main>
   );

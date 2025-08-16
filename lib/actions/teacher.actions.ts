@@ -155,3 +155,68 @@ export const createTeacherSession = async ({ teacherId, transcript }: { teacherI
         throw new Error("Failed to create teacher session.");
     }
 }
+
+export const sendMessageToSambaNova = async (messages: Array<{ role: string; content: string }>) => {
+    const { userId } = await auth();
+    const supabase = createSupabaseClient();
+
+    if (!userId) {
+        throw new Error("User not found");
+    }
+
+    let { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id, remaining_chat_instances')
+        .eq('id', userId)
+        .single();
+
+    if (userError) {
+        console.error("Error fetching user chat instances:", userError);
+        throw new Error("Failed to fetch user chat instances.");
+    }
+
+    if (!userData || userData.remaining_chat_instances <= 0) {
+        throw new Error("You have no remaining chat instances. Please upgrade your plan.");
+    }
+
+    try {
+        const resp = await fetch("https://api.sambanova.ai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer 83c38b60-fc10-4a61-bbbd-7a57aa3d10b9`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "DeepSeek-V3-0324",
+                stream: false,
+                messages: messages
+            })
+        });
+
+        if (!resp.ok) {
+            const errText = await resp.text();
+            console.error("SambaNova chat request failed", errText);
+            throw new Error("Failed to get response from SambaNova.");
+        }
+
+        const result = await resp.json();
+        const aiResponse = result.choices?.[0]?.message?.content ?? "No response found.";
+
+        // Decrement remaining_chat_instances
+        const { error: updateError } = await supabase
+            .from('users')
+            .update({ remaining_chat_instances: userData.remaining_chat_instances - 1 })
+            .eq('id', userId);
+
+        if (updateError) {
+            console.error("Failed to update user chat instances:", updateError);
+            // Don't throw error here, just log it, as the chat message was successful
+        }
+
+        return aiResponse;
+
+    } catch (error) {
+        console.error("Error in sendMessageToSambaNova:", error);
+        throw error; // Re-throw the original error
+    }
+}

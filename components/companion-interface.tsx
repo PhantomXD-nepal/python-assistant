@@ -6,9 +6,12 @@ import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { CompanionComponentProps, SavedMessage } from "@/types";
-import { createTeacherSession } from "@/lib/actions/teacher.actions";
+import { createTeacherSession, sendMessageToSambaNova } from "@/lib/actions/teacher.actions";
 import { getUser, updateUserDuration } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -33,6 +36,8 @@ const CompanionComponent = ({
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [user, setUser] = useState({ duration: 0 });
   const [callDuration, setCallDuration] = useState(0);
+  const [chatMessages, setChatMessages] = useState<Array<{ role: string; content: string }>>([]);
+  const [currentMessage, setCurrentMessage] = useState("");
 
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const callStartTime = useRef<number | null>(null);
@@ -144,6 +149,23 @@ const CompanionComponent = ({
   const handleDisconnect = () => {
     setCallStatus(CallStatus.FINISHED);
     vapi.stop();
+  };
+
+  const handleSendMessage = async () => {
+    if (currentMessage.trim() === "") return;
+
+    const newUserMessage = { role: "user", content: currentMessage };
+    setChatMessages((prev) => [...prev, newUserMessage]);
+
+    setCurrentMessage("");
+
+    try {
+      const aiResponse = await sendMessageToSambaNova([...chatMessages, newUserMessage]);
+      setChatMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setChatMessages((prev) => [...prev, { role: "assistant", content: "Error: Could not get a response." }]);
+    }
   };
 
   const formatDuration = (seconds: number) => {
@@ -258,7 +280,39 @@ const CompanionComponent = ({
         </div>
       </section>
 
-      
+      <section className="mt-8 p-4 border rounded-lg flex flex-col h-[400px]">
+        <h2 className="text-2xl font-bold mb-4">Chat with {name}</h2>
+        <div className="flex-1 overflow-y-auto mb-4 p-2 border rounded-lg bg-gray-50">
+          {chatMessages.map((msg, index) => (
+            <div key={index} className={`mb-2 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+              <div
+                className={`inline-block p-2 rounded-lg ${msg.role === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}
+              >
+                {msg.role === "assistant" ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            placeholder="Type your message..."
+            value={currentMessage}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleSendMessage();
+              }
+            }}
+            className="flex-1"
+          />
+          <Button onClick={handleSendMessage}>Send</Button>
+        </div>
+      </section>
     </section>
   );
 };
