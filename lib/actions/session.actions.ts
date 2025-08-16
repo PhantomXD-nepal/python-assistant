@@ -4,9 +4,11 @@
 import { createSupabaseClient } from '@/lib/supabase';
 import { auth } from '@clerk/nextjs/server';
 
+const supabase = createSupabaseClient();
+
 export const addToSessionHistory = async (teacherId: string) => {
   const { userId } = await auth();
-  const supabase = createSupabaseClient();
+  
 
   const { data, error } = await supabase.from('session_history')
     .insert({
@@ -20,7 +22,7 @@ export const addToSessionHistory = async (teacherId: string) => {
 }
 
 export const getRecentSessions = async (limit = 10) => {
-    const supabase = createSupabaseClient();
+    
 
     const { data, error } = await supabase
         .from('session_history')
@@ -34,7 +36,7 @@ export const getRecentSessions = async (limit = 10) => {
 }
 
 export const getUserSessions = async (userId: string, limit = 10) => {
-    const supabase = createSupabaseClient();
+    
 
     const { data, error } = await supabase
         .from('session_history')

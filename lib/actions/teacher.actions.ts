@@ -53,7 +53,7 @@ export const CreateTeacher = async (formData: CreateCompanion) => {
     if (error || !data || data.length === 0) {
         throw new Error("Failed to create teacher companion")
     }
-
+    
     const { error: updateError } = await supabase
         .from('users')
         .update({ remaining_instances: userData.remaining_instances - 1 })
