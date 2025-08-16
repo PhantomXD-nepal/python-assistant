@@ -5,7 +5,6 @@ import { cn, configureAssistant, getSubjectColor } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import soundwaves from "@/constants/soundwaves.json";
 import { CompanionComponentProps, SavedMessage } from "@/types";
 import { createTeacherSession } from "@/lib/actions/teacher.actions";
 
@@ -140,11 +139,11 @@ const CompanionComponent = ({
               )}
             >
               <Lottie
-                lottieRef={lottieRef}
-                animationData={soundwaves}
-                autoplay={false}
-                className="companion-lottie"
-              />
+                  lottieRef={lottieRef}
+                  path="/soundwaves.json"
+                  autoplay={false}
+                  className="companion-lottie"
+                />
             </div>
           </div>
           <p className="font-bold text-2xl">{name}</p>
