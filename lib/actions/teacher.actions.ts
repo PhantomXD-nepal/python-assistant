@@ -68,10 +68,11 @@ export const CreateTeacher = async (formData: CreateCompanion) => {
 }
 
 export const getAllTeacher = async({ limit=10, page=1, subject,topic}:GetAllCompanions) =>{
+    const { userId } = auth()
     const supabase = createSupabaseClient()
 
-    let query = supabase.from('teachers').select()
-
+    // 1. Fetch teachers
+    let query = supabase.from('teachers').select('*')
     if(subject && topic){
         query= query.ilike('subject',`%${subject}%`).or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`)
     }else if (subject){
@@ -79,12 +80,38 @@ export const getAllTeacher = async({ limit=10, page=1, subject,topic}:GetAllComp
     }else if (topic){
         query = query.or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`)
     }
-
     query = query.range((page-1) * limit, page*limit - 1)
-    const {data:companions,error} = await query;
+    const {data: companions, error: companionsError} = await query;
 
+    if (companionsError) {
+        console.error("Error fetching teachers:", companionsError);
+        return [];
+    }
+    if (!companions) return [];
 
-    return companions
+    // 2. Fetch bookmarked teacher IDs if user is logged in
+    let bookmarkedIds = new Set<number>();
+    if (userId) {
+        const { data: bookmarks, error: bookmarksError } = await supabase
+            .from('bookmarked_teachers')
+            .select('teacher_id')
+            .eq('user_id', userId);
+
+        if (bookmarksError) {
+            console.error("Error fetching bookmarks:", bookmarksError);
+            // Continue without bookmark info
+        } else {
+            bookmarkedIds = new Set(bookmarks.map(b => b.teacher_id));
+        }
+    }
+
+    // 3. Map teachers and add bookmarked status
+    const result = companions.map(companion => ({
+        ...companion,
+        bookmarked: bookmarkedIds.has(companion.id)
+    }));
+
+    return result;
 }
 
 export const getTeacher = async(id:string) => {
