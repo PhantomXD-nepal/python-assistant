@@ -38,6 +38,31 @@ const CompanionComponent = ({
   const [callDuration, setCallDuration] = useState(0);
   const [chatMessages, setChatMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+  const [limitModalMessage, setLimitModalMessage] = useState("");
+
+  const handleSendMessage = async () => {
+    if (currentMessage.trim() === "") return;
+
+    const newUserMessage = { role: "user", content: currentMessage };
+    setChatMessages((prev) => [...prev, newUserMessage]);
+
+    setCurrentMessage("");
+
+    try {
+      const aiResponse = await sendMessageToSambaNova([...chatMessages, newUserMessage]);
+      setChatMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
+    } catch (error: any) {
+      console.error("Error sending message:", error);
+      console.log("Error object:", JSON.stringify(error, Object.getOwnPropertyNames(error))); // Log the full error object
+      if (error.message.includes("chat instances") || error.message.includes("duration")) {
+        setLimitModalMessage(error.message);
+        setIsLimitModalOpen(true);
+      } else {
+        setChatMessages((prev) => [...prev, { role: "assistant", content: "Error: Could not get a response." }]);
+      }
+    }
+  };
 
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const callStartTime = useRef<number | null>(null);
@@ -151,22 +176,7 @@ const CompanionComponent = ({
     vapi.stop();
   };
 
-  const handleSendMessage = async () => {
-    if (currentMessage.trim() === "") return;
-
-    const newUserMessage = { role: "user", content: currentMessage };
-    setChatMessages((prev) => [...prev, newUserMessage]);
-
-    setCurrentMessage("");
-
-    try {
-      const aiResponse = await sendMessageToSambaNova([...chatMessages, newUserMessage]);
-      setChatMessages((prev) => [...prev, { role: "assistant", content: aiResponse }]);
-    } catch (error) {
-      console.error("Error sending message:", error);
-      setChatMessages((prev) => [...prev, { role: "assistant", content: "Error: Could not get a response." }]);
-    }
-  };
+  
 
   const formatDuration = (seconds: number) => {
     
