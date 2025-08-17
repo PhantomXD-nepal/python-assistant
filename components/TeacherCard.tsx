@@ -1,64 +1,69 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+"use client"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Clock, Bookmark } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { getSubjectColor } from "@/lib/utils"
 
 interface CompanionCardProps {
-  id: string;
-  name: string;
-  topic: string;
-  subject: string;
-  duration: number;
-  color: string;
-  bookmarked: boolean;
+  id: string
+  name: string
+  topic: string
+  subject: string
+  duration: number
+  color: string
+  bookmarked: boolean
 }
 
-const CompanionCard = ({
-  id,
-  name,
-  topic,
-  subject,
-  duration,
-  color,
-  bookmarked,
-}: CompanionCardProps) => {
-  const pathname = usePathname();
+const CompanionCard = ({ id, name, topic, subject, duration, color, bookmarked }: CompanionCardProps) => {
+  const pathname = usePathname()
+  const subjectColor = getSubjectColor(subject)
 
   return (
-    <article className="companion-card" style={{ backgroundColor: color }}>
-      <div className="flex justify-between items-center">
-        <div className="subject-badge">{subject}</div>
-        <button className="companion-bookmark">
-          <Image
-            src={
-              bookmarked ? "/icons/bookmark-filled.svg" : "/icons/bookmark.svg"
-            }
-            alt="bookmark"
-            width={12.5}
-            height={15}
-          />
+    <article className="bg-card rounded-xl border border-border p-4 md:p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/20 w-full max-w-sm mx-auto group">
+      <div className="flex justify-between items-start mb-4">
+        <div
+          className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-white shadow-sm"
+          style={{ backgroundColor: subjectColor }}
+        >
+          {subject}
+        </div>
+        <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-primary text-primary" : "text-muted-foreground"}`} />
         </button>
       </div>
 
-      <h2 className="text-2xl font-bold">{name}</h2>
-      <p className="text-sm">{topic}</p>
-      <div className="flex items-center gap-2">
-        <Image
-          src="/icons/clock.svg"
-          alt="duration"
-          width={13.5}
-          height={13.5}
-        />
-        <p className="text-sm">{duration} minutes</p>
+      <div className="space-y-3 mb-6">
+        <h2 className="text-lg md:text-xl font-bold text-foreground font-sans leading-tight group-hover:text-primary transition-colors">
+          {name}
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{topic}</p>
+
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Clock className="w-4 h-4" />
+          <span className="text-sm font-medium">{duration} minutes</span>
+        </div>
       </div>
 
-      <Link href={`/Teachers/${id}`} className="w-full">
-        <button className="btn-primary w-full justify-center">
+      <Link href={`/Teachers/${id}`} className="w-full block">
+        <Button
+          className="w-full text-white font-semibold py-3 rounded-lg transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            backgroundColor: subjectColor,
+            borderColor: subjectColor,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = `${subjectColor}dd`
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = subjectColor
+          }}
+        >
           Launch Lesson
-        </button>
+        </Button>
       </Link>
     </article>
-  );
-};
+  )
+}
 
-export default CompanionCard;
+export default CompanionCard

@@ -1,40 +1,38 @@
+'use client';
+
 import CompanionForm from "@/components/CompanionForm";
 import { getUser } from "@/lib/actions/user.actions";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import LimitReachedModal from "@/components/LimitReachedModal";
+import { useRouter } from "next/navigation";
 
-const NewCompanion = async () => {
-  const user = await getUser();
-  const canCreateCompanion = user && user.remaining_instances > 0;
+const NewCompanionPage = () => {
+  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkLimit = async () => {
+      const user = await getUser();
+      if (user && user.remaining_instances <= 0) {
+        setShowModal(true);
+      }
+    };
+    checkLimit();
+  }, []);
 
   return (
     <main className="min-lg:w-1/3 min-md:w-2/3 items-center justify-center">
-      {canCreateCompanion ? (
-        <CompanionForm />
-      ) : (
-        <article className="companion-limit">
-          <Image
-            src="/images/limit.svg"
-            alt="Companion limit reached"
-            width={360}
-            height={230}
-          />
-          <div className="cta-badge">Upgrade your plan</div>
-          <h1>You’ve Reached Your Limit</h1>
-          <p>
-            You’ve reached your companion limit. Upgrade to create more
-            companions and premium features.
-          </p>
-          <Link
-            href="/plans"
-            className="btn-primary w-full justify-center"
-          >
-            Upgrade My Plan
-          </Link>
-        </article>
-      )}
+      <CompanionForm />
+      <LimitReachedModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          router.push("/Teachers");
+        }}
+        message="You've reached your companion limit. Upgrade to create more companions and premium features."
+      />
     </main>
   );
 };
 
-export default NewCompanion;
+export default NewCompanionPage;

@@ -1,7 +1,9 @@
-import { SignIn } from "@clerk/nextjs";
+
+import { SignIn, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default function SignInPage() {
   return (

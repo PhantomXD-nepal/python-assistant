@@ -3,6 +3,7 @@ import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "@/components/Navbar";
+import 'katex/dist/katex.min.css';
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
