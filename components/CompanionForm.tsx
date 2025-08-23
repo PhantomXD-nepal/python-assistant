@@ -147,7 +147,6 @@ const CompanionForm = () => {
                         className="border-2 bg-white focus-visible:ring-0 rounded-xl px-4 py-3 text-base transition-all duration-200"
                         style={{
                           borderColor: field.value ? subjectColor : "#d1d5db",
-                          focusVisibleBorderColor: subjectColor,
                         }}
                       />
                     </FormControl>

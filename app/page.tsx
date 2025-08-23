@@ -6,6 +6,8 @@ import { getRecentSessions } from "@/lib/actions/session.actions"
 import { getSubjectColor } from "@/lib/utils"
 import "katex/dist/katex.min.css"
 
+export const dynamic = 'force-dynamic'
+
 const Page = async () => {
   const companions = await getAllTeacher({ limit: 3 })
   const recentSessions = await getRecentSessions()

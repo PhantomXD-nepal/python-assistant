@@ -67,7 +67,8 @@ export const CreateTeacher = async (formData: CreateCompanion) => {
     return data[0]
 }
 
-export const getAllTeacher = async({ limit=10, page=1, subject,topic}:GetAllCompanions) =>{
+export const getAllTeacher = async({ limit=10, page=1, subject,topic}:GetAllCompanions) => {
+    console.log("--- GET ALL TEACHER CALLED ---");
     const { userId } = auth()
     const supabase = createSupabaseClient()
 
@@ -89,29 +90,7 @@ export const getAllTeacher = async({ limit=10, page=1, subject,topic}:GetAllComp
     }
     if (!companions) return [];
 
-    // 2. Fetch bookmarked teacher IDs if user is logged in
-    let bookmarkedIds = new Set<number>();
-    if (userId) {
-        const { data: bookmarks, error: bookmarksError } = await supabase
-            .from('bookmarked_teachers')
-            .select('teacher_id')
-            .eq('user_id', userId);
-
-        if (bookmarksError) {
-            console.error("Error fetching bookmarks:", bookmarksError);
-            // Continue without bookmark info
-        } else {
-            bookmarkedIds = new Set(bookmarks.map(b => b.teacher_id));
-        }
-    }
-
-    // 3. Map teachers and add bookmarked status
-    const result = companions.map(companion => ({
-        ...companion,
-        bookmarked: bookmarkedIds.has(companion.id)
-    }));
-
-    return result;
+    return companions;
 }
 
 export const getTeacher = async(id:string) => {

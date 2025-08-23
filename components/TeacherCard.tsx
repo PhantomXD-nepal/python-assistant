@@ -1,11 +1,8 @@
 "use client"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Clock, Bookmark } from "lucide-react"
+import { Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getSubjectColor } from "@/lib/utils"
-import { toggleBookmark } from "@/lib/actions/bookmark.actions"
-import { useTransition } from "react"
 
 interface CompanionCardProps {
   id: string
@@ -14,23 +11,13 @@ interface CompanionCardProps {
   subject: string
   duration: number
   color: string
-  bookmarked: boolean
 }
 
-const CompanionCard = ({ id, name, topic, subject, duration, color, bookmarked }: CompanionCardProps) => {
-  const pathname = usePathname()
+const CompanionCard = ({ id, name, topic, subject, duration, color }: CompanionCardProps) => {
   const subjectColor = getSubjectColor(subject)
-  const [isPending, startTransition] = useTransition()
-
-  const handleBookmark = () => {
-    startTransition(() => {
-      toggleBookmark(id)
-    })
-
-  }
 
   return (
-    <article className="bg-card rounded-xl border border-border p-4 md:p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/20 w-full max-w-sm mx-auto group">
+    <article className={`bg-card rounded-xl border p-4 md:p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/20 w-full max-w-sm mx-auto group border-border`}>
       <div className="flex justify-between items-start mb-4">
         <div
           className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-white shadow-sm"
@@ -38,13 +25,6 @@ const CompanionCard = ({ id, name, topic, subject, duration, color, bookmarked }
         >
           {subject}
         </div>
-        <button 
-          className="p-2 hover:bg-muted rounded-lg transition-colors disabled:opacity-50"
-          onClick={handleBookmark}
-          disabled={isPending}
-        >
-          <Bookmark className={`w-4 h-4 ${bookmarked ? "fill-primary text-primary" : "text-muted-foreground"}`} />
-        </button>
       </div>
 
       <div className="space-y-3 mb-6">

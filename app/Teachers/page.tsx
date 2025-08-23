@@ -29,6 +29,7 @@ const CompanionsLibrary = async ({ searchParams }: SearchParams) => {
             key={teacher.id}
             {...teacher}
             color={getSubjectColor(teacher.subject)}
+
           />
         ))}
       </section>
