@@ -244,7 +244,8 @@ CREATE TABLE public.session_history (
 </details>
 
 <details> <summary>SQL Schema Visual</summary>
-<img width="1607" height="847" alt="supabase-schema-xebyebqboerrhijkpvxb (3)" src="https://github.com/user-attachments/assets/87d1da31-2050-4db1-837c-b0c740894684" />
+
+<img width="1607" height="847" alt="supabase-schema-xebyebqboerrhijkpvxb (4)" src="https://github.com/user-attachments/assets/43b1fa7e-ceb8-48eb-8b72-4081e0615e38" />
 </details>
 License
 
