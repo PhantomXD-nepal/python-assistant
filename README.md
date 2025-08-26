@@ -63,28 +63,34 @@ npm install
 ```
 Setup environment variables
 
+```.env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 VAPI_KEY=your_vapi_key
-
+```
 
 Run the development server
 
+```bash
 npm run dev
+```
 
-
-Open http://localhost:3000
+Open `http://localhost:3000`
  to view the app.
 
 Exporting Supabase Database Schema
 
 Since Supabase CLI may require Docker, the simplest way to export your schema is via pg_dump:
 
+```bash
 pg_dump --schema-only --no-owner --file=schema.sql \
 "postgres://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME"
-
+```
 
 Replace DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME with your Supabase credentials.
+
+<details> <summary>SQL Schema</summary>
+
 
 ```sql
 -- ===============================================
@@ -233,6 +239,9 @@ CREATE TABLE public.session_history (
 );
 
 ```
+
+
+</details>
 
 License
 
