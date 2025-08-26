@@ -1,55 +1,55 @@
-Nepali LMS with AI & VAPI Integration
+# 🌟 Nepali LMS with AI & VAPI Integration
 
-A modern Learning Management System (LMS) built with Next.js, VAPI, and AI integration to help students in Nepal learn topics they are interested in. The platform provides realistic learning experiences through experience notes, flashcards, and exams, while keeping education affordable.
+A modern **Learning Management System (LMS)** built with **Next.js**, **VAPI**, and **AI integration** to help students in **Nepal** learn topics they are interested in.  
+The platform provides **realistic learning experiences** through **experience notes**, **flashcards**, and **exams**, while keeping education **affordable**.
 
-Features
+---
 
-AI-powered Learning: Generate personalized learning materials (notes, flashcards, exams) tailored to student interests.
+## 🚀 Features
 
-Experience Notes: Create interactive notes simulating real-life learning.
+- **AI-powered Learning**: Generate personalized learning materials (notes, flashcards, exams) tailored to student interests.  
+- **Experience Notes**: Create interactive notes simulating real-life learning.  
+- **Flashcards & Exams**: AI-generated flashcards and practice exams to reinforce learning.  
+- **Affordable Pricing**: Designed for Nepali students with accessible subscription plans.  
+- **Nepal-focused Content**: Learning materials relevant to Nepal’s curriculum and context.  
 
-Flashcards & Exams: AI-generated flashcards and practice exams to reinforce learning.
+---
 
-Affordable Pricing: Designed for Nepali students with accessible subscription plans.
+## 🛠 Tech Stack
 
-Nepal-focused Content: Learning materials relevant to Nepal’s curriculum and context.
+- **Frontend:** Next.js, React  
+- **Backend:** Supabase (PostgreSQL), Node.js  
+- **AI Integration:** VAPI + AI models for content generation  
+- **Authentication:** Supabase Auth  
+- **Database:** PostgreSQL (Supabase managed)  
 
-Tech Stack
+---
 
-Frontend: Next.js, React
+## 🗄 Database Structure (Simplified)
 
-Backend: Supabase (PostgreSQL), Node.js
+| Table | Description |
+|-------|-------------|
+| **users** | Stores user info, subscription plan, and limits on AI edits. |
+| **teachers** | Stores teacher profiles, subject, topic, lesson plan, and style. |
+| **notes** | Student notes linked to teachers. |
+| **flashcard_decks** | Collections of AI-generated flashcards per user and teacher. |
+| **flashcards** | Individual flashcards within a deck. |
+| **exams** | AI-generated exams by teachers. |
+| **exam_attempts** | Students’ attempts, answers, scores, and graded results. |
+| **bookmarked_teachers** | Students can bookmark favorite teachers. |
+| **session_history** | Tracks interactions between students and teachers. |
 
-AI Integration: VAPI + AI models for content generation
+> All tables include timestamps for creation and updates for tracking progress.
 
-Authentication: Supabase Auth
+---
 
-Database: PostgreSQL (Supabase managed)
+## ⚡ Getting Started
 
-Database Structure (Simplified)
+### 1. Clone the repository
 
-users – Stores user info, subscription plan, and limits on AI edits.
-
-teachers – Stores teacher profiles, subject, topic, lesson plan, and style.
-
-notes – Student notes linked to teachers.
-
-flashcard_decks – Collections of AI-generated flashcards per user and teacher.
-
-flashcards – Individual flashcards within a deck.
-
-exams – AI-generated exams by teachers.
-
-exam_attempts – Students’ attempts, answers, scores, and graded results.
-
-bookmarked_teachers – Students can bookmark favorite teachers.
-
-session_history – Tracks interactions between students and teachers.
-
-All tables include timestamps for creation and updates for tracking progress.
-
-Getting Started
-
+```bash
+git clone https://github.com/yourusername/nepali-lms-ai.git
+cd nepali-lms-ai
 Clone the repository
 
 git clone https://github.com/yourusername/nepali-lms-ai.git
@@ -60,7 +60,7 @@ Install dependencies
 
 npm install
 
-
+```
 Setup environment variables
 
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
