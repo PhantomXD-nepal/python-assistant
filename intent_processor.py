@@ -59,6 +59,22 @@ def process_intent(assistant, intent: dict, transcribed_text: str):
                         assistant.speak(f"Could not find '{content}' in your todos")
                 else:
                     assistant.speak("What would you like me to do with your todos?")
+
+            elif tool_name == "google":
+                search_query = params.get("search_query", "")
+                if search_query:
+                    result = assistant.tools["google_searcher"].search(search_query)
+                    assistant.speak(result)
+                else:
+                    assistant.speak("What would you like me to search on Google?")
+            
+            elif tool_name == "wikipedia":
+                search_query = params.get("search_query", "")
+                if search_query:
+                    result = assistant.tools["wikipedia_searcher"].search(search_query)
+                    assistant.speak(result)
+                else:
+                    assistant.speak("What would you like me to search on Wikipedia?")
             
             elif tool_name == "conversation":
                 query = params.get("query", transcribed_text)

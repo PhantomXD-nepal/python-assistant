@@ -33,27 +33,30 @@ class IntentParser:
                 }},
                 "conversation": {{
                     "query": "..."
+                }},
+                "google": {{
+                    "search_query": "..."
+                }},
+                "wikipedia": {{
+                    "search_query": "..."
                 }}
             }}
         }}
 
         Rules:
-        1. Your response MUST ONLY BE A  no extra bullshit be a single valid JSON object and nothing else. Do not add any explanatory text or markdown formatting.
-        2. If the user is not asking to use a tool, use the 'conversation' tool.
+        1. Your response MUST be a single valid JSON object and nothing else. Do not add any explanatory text or markdown formatting.
+        2. If the user's command does not match any of the other tools, or if it is a general question or statement, classify it as 'conversation'.
         3. Only include ONE tool that is being requested.
         4. For todos, use action types: "add", "delete", "edit", "read".
         5. For math problems, use the "math_solver" tool.
-        6. Please ensure the JSON is properly formatted. and dont add anything else no matter what the request is.
 
         Examples:
         - "hello" -> {{"tools_to_activate": {{"conversation": {{"query": "hello"}}}}}}
         - "play music" -> {{"tools_to_activate": {{"youtube": {{"search_query": "music"}}}}}}
         - "what time is it" -> {{"tools_to_activate": {{"time_teller": {{}}}}}}
-        - "what is the time right now" -> {{"tools_to_activate": {{"time_teller": {{}}}}}}
-        - "tell me the time" -> {{"tools_to_activate": {{"time_teller": {{}}}}}}
         - "add buy milk to todos" -> {{"tools_to_activate": {{"todos_system": {{"action": "add", "content": "buy milk"}}}}}}
-
-
+        - "google what is a supernova" -> {{"tools_to_activate": {{"google": {{"search_query": "what is a supernova"}}}}}}
+        - "wikipedia albert einstein" -> {{"tools_to_activate": {{"wikipedia": {{"search_query": "albert einstein"}}}}}}
         """
         
         try:
