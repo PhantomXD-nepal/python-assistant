@@ -13,6 +13,8 @@ from tools.web_opener import WebOpener
 from tools.time_teller import TimeTeller
 from tools.math_solver import MathSolver
 from tools.todo_manager import TodoManager
+from tools.google_searcher import GoogleSearcher
+from tools.wikipedia_searcher import WikipediaSearcher
 
 class VoiceAssistant:
     def __init__(self):
@@ -36,6 +38,8 @@ class VoiceAssistant:
                 "time_teller": TimeTeller(),
                 "math_solver": MathSolver(self.api_key),
                 "todo_manager": TodoManager(),
+                "google_searcher": GoogleSearcher(self.api_key),
+                "wikipedia_searcher": WikipediaSearcher(self.api_key),
             }
         except Exception as e:
             print(f"Error initializing tools: {e}")
