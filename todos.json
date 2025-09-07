@@ -1,0 +1,10 @@
+[
+    {
+        "task": "to-do's",
+        "completed": false
+    },
+    {
+        "task": "doing homework",
+        "completed": false
+    }
+]

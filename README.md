@@ -1,37 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Python Voice Assistant with Vapi Integration
 
-## Getting Started
+A voice assistant that listens for a wake word, connects to the Vapi service for conversation, and manages its state between idle and chatting.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Wake word detection ("Hey", "Oye").
+- Two states: `idle` (listening for wake word) and `chatting` (connected to Vapi).
+- Automatic connection to Vapi on wake word detection.
+- Disconnection from Vapi after a period of inactivity.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requirements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `speechrecognition`
+- `pyaudio`
+- `vapi`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development Plan (To-Do)
 
-## Learn More
+- [ ] Setup project structure.
+- [ ] Create `main.py` with the main application logic.
+- [ ] Implement the `idle` state with wake word detection using `speechrecognition`.
+- [ ] Implement the `chatting` state with Vapi integration.
+- [ ] Implement state transitions between `idle` and `chatting`.
+- [ ] Add error handling.
+- [ ] (Optional) Add configuration for Vapi API keys.
+- [ ] (Optional) Implement a timeout to disconnect from Vapi and return to the `idle` state.
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Saraswoti
+1. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Run the application:
+   ```bash
+   python main.py
+   ```
+"# python-assistant" 

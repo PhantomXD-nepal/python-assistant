@@ -1,0 +1,4 @@
+pyaudio
+openai
+edge-tts
+playsound==1.2.2
